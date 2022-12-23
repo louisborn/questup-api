@@ -6,7 +6,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import *
 
 
-student_data=pd.read_csv('input/student-mat.csv')
+student_data=pd.read_csv('questup-api/data/student-mat.csv')
 
 # predict value for new row is not working yet
 #student_data.insert(33, column="G4", value=None)
@@ -30,8 +30,8 @@ print(f'Accuracy: {round(r2_score(Y_test , pred),3)*100}%')
 
 best_features=['studytime', 'failures', 'absences', 'G1', 'G2']
 
-# here we have a list of values of the features that we use to make prediction and can use it as single input
-input_to_guess = [2, 0, 6, 5, 6]
+# here we have a list of values of the features that we use to make prediction and can use it as single data
+input_to_guess = [4, 1, 2, 10, 15]
 predicted_grade = model.predict(np.array(input_to_guess).reshape((1, -1)))[0]
 print(predicted_grade, "guessed")
 
