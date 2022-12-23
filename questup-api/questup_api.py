@@ -3,12 +3,11 @@ from flask_cors import CORS
 
 from mongodb_handler import MongoDBHandler
 
-# from flask_login import LoginManager
-
 app = Flask(__name__)
 CORS(app)
 
 BASE_URL = '/quest-up/'
+_db = MongoDBHandler()
 
 
 @app.route(BASE_URL + '<teacher_id>/<subject_id>/quests')
@@ -20,8 +19,7 @@ def get_quests(teacher_id, subject_id):
     :param subject_id: the unique subject identifier
     :return: the list of quests
     """
-    db_handler = MongoDBHandler()
-    return db_handler.get_quests(teacher_id, subject_id)
+    return _db.get_quests(teacher_id, subject_id)
 
 
 @app.route(BASE_URL + '<teacher_id>/annual-rewards')
@@ -32,8 +30,7 @@ def get_annual_rewards(teacher_id):
     :param teacher_id: the unique teacher identifier
     :return: the list of annual rewards
     """
-    db_handler = MongoDBHandler()
-    return db_handler.get_annual_rewards(teacher_id)
+    return _db.get_annual_rewards(teacher_id)
 
 
 @app.route(BASE_URL + '<student_id>/quests/<quest_id>/submit', methods=['POST'])
@@ -47,7 +44,29 @@ def submit_student_quest_result(student_id, quest_id):
     """
     json_data = request.get_json()  # Get the quest data object
     quest = json_data.get("quest")
-    return 'Okay'
+    pass
+
+
+@app.route(BASE_URL + 'students/<student_id>')
+def get_student(student_id):
+    """
+    Parameters
+    ----------
+    :param student_id: the unique student identifier
+    :return: the student data object
+    """
+    return _db.get_student(student_id)
+
+
+@app.route(BASE_URL + 'shop-items/<teacher_id>')
+def get_shop_items(teacher_id):
+    """
+    Parameters
+    ----------
+    :param teacher_id: the unique teacher identifier
+    :return: the list of available shop items
+    """
+    return _db.get_shop_items(teacher_id)
 
 
 app.run(host="0.0.0.0", port=6001)
