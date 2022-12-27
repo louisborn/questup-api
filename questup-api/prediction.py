@@ -12,10 +12,12 @@ class GradePredictionController:
 
     """
     def __init__(self, prediction_data=None):
+        if prediction_data is None:
+            prediction_data = [2, 0, 3, 10, 10]
         self.storage = 'grade_prediction_model.joblib'
         self.data = pd.read_csv('questup-api/data/student-mat.csv')
         self.features = ['studytime', 'failures', 'absences', 'G1', 'G2']
-        self.prediction_data = [2, 0, 3, 10, 10]  # use prediction data here
+        self.prediction_data = prediction_data
 
     def train_model(self):
         trainer = Trainer(student_data=self.data, selected_features=self.features)
