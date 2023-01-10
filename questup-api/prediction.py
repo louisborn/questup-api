@@ -15,12 +15,12 @@ class GradePredictionController:
         if prediction_data is None:
             prediction_data = [2, 0, 3, 10, 10]
         self.storage = 'grade_prediction_model.joblib'
-        self.data = pd.read_csv('questup-api/data/student-mat.csv')
+        self.data = pd.read_csv('data/student-mat.csv')
         self.features = ['studytime', 'failures', 'absences', 'G1', 'G2']
         self.prediction_data = prediction_data
 
     def train_model(self):
-        trainer = Trainer(student_data=self.data, selected_features=self.features)
+        trainer = Trainer(self.storage, student_data=self.data, selected_features=self.features)
         trainer.persist_model()
         return 'Okay'
 
@@ -72,4 +72,13 @@ class Predicter:
 # print(model.predict(np.array(input_to_guess).reshape((1, -1)))[0])
 
 # it would also be possible to make a prediction for a particular row in the dataset
-# print(model.predict((student_data.iloc[44-2][best_features]).values.reshape(1,-1)), "guessed_row")
+# print(model.predict((student_data.iloc[44-2][best_features]).values.reshape(1,-1)), "guessed_
+
+
+# c = GradePredictionController()
+# print(c.train_model())
+# print(c.predict())
+#
+# # prediction data in predict übergeben
+# c.prediction_data = [2, 0, 3, 10, 20]
+# print(c.predict())
