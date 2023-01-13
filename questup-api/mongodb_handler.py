@@ -22,30 +22,24 @@ class MongoDBClients:
 
     def __init__(self):
         self.db_conn = 'mongodb+srv://testDB:test123@cluster0.rj3hvso.mongodb.net/test'
-        self.collection_quests = pymongo.MongoClient(self.db_conn).quest_up.quests
-        self.collection_annual_rewards = pymongo.MongoClient(self.db_conn).quest_up.annual_rewards
-        self.collection_students = pymongo.MongoClient(self.db_conn).quest_up.students
-        self.collection_students_scores = pymongo.MongoClient(self.db_conn).quest_up.students_scores
-        self.collection_students_completed_quests = pymongo.MongoClient(self.db_conn).quest_up.students_completed_quests
-        self.collection_shop_items = pymongo.MongoClient(self.db_conn).quest_up.shop_items
 
     def get_client_for_quests(self):
-        return self.collection_quests
+        return pymongo.MongoClient(self.db_conn).quest_up.quests
 
     def get_client_for_annual_rewards(self):
-        return self.collection_annual_rewards
+        return pymongo.MongoClient(self.db_conn).quest_up.annual_rewards
 
     def get_client_for_students(self):
-        return self.collection_students
+        return pymongo.MongoClient(self.db_conn).quest_up.students
 
     def get_client_for_students_scores(self):
-        return self.collection_students_scores
+        return pymongo.MongoClient(self.db_conn).quest_up.students_scores
 
     def get_client_for_students_completed_quests(self):
-        return self.collection_students_completed_quests
+        return pymongo.MongoClient(self.db_conn).quest_up.students_completed_quests
 
     def get_client_for_shop_items(self):
-        return self.collection_shop_items
+        return pymongo.MongoClient(self.db_conn).quest_up.shop_items
 
 
 class MongoDBHandler(MongoDBClients):
