@@ -88,4 +88,4 @@ def get_student_completed_quests(student_id):
     return _db.get_student_completed_quests(student_id)
 
 
-app.run(host="0.0.0.0", port=6001)
+app.run(host="0.0.0.0", port=6009)
