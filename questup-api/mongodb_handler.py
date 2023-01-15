@@ -1,5 +1,6 @@
 import pymongo
 from bson import ObjectId
+from datetime import datetime
 
 
 def stringify_id(value):
@@ -12,6 +13,19 @@ def stringify_id(value):
     :return: the data object with '_id' of type str
     """
     value["_id"] = str(value["_id"])
+    return value
+
+
+def format_timestamp(value):
+    """
+    Converts a timestamp into a formatted datetime
+
+    Parameters
+    ----------
+    :param: the dict object with the timestamp
+    """
+    date_from_timestamp = datetime.fromtimestamp(value["publish_date"])
+    value["publish_date"] = datetime.strftime(date_from_timestamp, '%Y-%m-%d')
     return value
 
 
@@ -55,7 +69,7 @@ class MongoDBHandler(MongoDBClients):
         try:
             client = MongoDBClients.get_client_for_quests(self)
             QUERY = {'$and': [{'teachers_id': {'$eq': teacher_id}}, {'subjects_id': {'$eq': int(subject_id)}}]}
-            return [stringify_id(x) for x in client.find(QUERY)]
+            return [format_timestamp(stringify_id(x)) for x in client.find(QUERY)]
         except (Exception, ValueError) as err:
             print(f"Unexpected {err=}, {type(err)=}")
             return self.error_message
@@ -91,7 +105,7 @@ class MongoDBHandler(MongoDBClients):
         try:
             client = MongoDBClients.get_client_for_students_completed_quests(self)
             QUERY = {'students_id': {'$eq': student_id}}
-            return [stringify_id(x) for x in client.find(QUERY)]
+            return [stringify_id(x) for x in client.find(QUERY, {'quests_id': 1})]
         except (Exception, KeyError) as err:
             print(f"Unexpected {err=}, {type(err)=}")
             return self.error_message
@@ -124,4 +138,3 @@ class MongoDBHandler(MongoDBClients):
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")
             return self.error_message
-
