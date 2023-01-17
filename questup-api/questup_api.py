@@ -56,6 +56,13 @@ def update_student_scores(student_id):
     return _db.set_student_scores(student_id, score)
 
 
+@app.route(BASE_URL + '<student_id>/scores/point-balance/update', methods=['POST'])
+def update_points_balance(student_id):
+    json_data = request.get_json()  # Get the quest data object
+    score = json_data.get("points")
+    return _db.update_student_points_balance(student_id, score)
+
+
 @app.route(BASE_URL + 'students/<student_id>')
 def get_student(student_id):
     """

@@ -138,3 +138,16 @@ class MongoDBHandler(MongoDBClients):
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")
             return self.error_message
+
+    def update_student_points_balance(self, student_id, score):
+        try:
+            client = MongoDBClients.get_client_for_students_scores(self)
+            QUERY = {'students_id': student_id}
+            if score > 0:
+                UPDATE = {'$inc': {"points_balance": score, "total_gained_points": score}}
+            else:
+                UPDATE = {'$inc': {"points_balance": score}}
+            return {"updated_count": str(client.update_one(QUERY, UPDATE).modified_count)}
+        except Exception as err:
+            print(f"Unexpected {err=}, {type(err)=}")
+            return self.error_message
