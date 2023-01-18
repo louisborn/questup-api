@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_cors import CORS
 
 from mongodb_handler import MongoDBHandler
+from daily_chest import DailyChest
 
 app = Flask(__name__)
 CORS(app)
@@ -56,6 +57,13 @@ def update_student_scores(student_id):
     return _db.set_student_scores(student_id, score)
 
 
+@app.route(BASE_URL + '<student_id>/scores/point-balance/update', methods=['POST'])
+def update_points_balance(student_id):
+    json_data = request.get_json()  # Get the quest data object
+    score = json_data.get("points")
+    return _db.update_student_points_balance(student_id, score)
+
+
 @app.route(BASE_URL + 'students/<student_id>')
 def get_student(student_id):
     """
@@ -86,6 +94,21 @@ def get_student_scores(student_id):
 @app.route(BASE_URL + 'students/<student_id>/completed-quests')
 def get_student_completed_quests(student_id):
     return _db.get_student_completed_quests(student_id)
+
+
+@app.route(f"{BASE_URL}daily-quest/win/<student_id>")
+def get_daily_quest_win(student_id):
+    daily_quest = DailyChest()
+    result = daily_quest.store_quest_win(user_id=student_id)
+    if result.get("payload").get("updated_count") != 0:
+        daily_quest.update_redeem_date(user_id=student_id)
+    result.get("payload")["win"] = daily_quest.user_win
+    return result
+
+
+@app.route(f"{BASE_URL}student/<student_id>/shop/points")
+def get_student_points_for_shop(student_id):
+    return _db.get_student_shop_data(student_id)
 
 
 app.run(host="0.0.0.0", port=6009)
