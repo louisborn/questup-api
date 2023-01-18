@@ -16,7 +16,7 @@ def stringify_id(value):
     return value
 
 
-def format_timestamp(value):
+def format_timestamp(value, key):
     """
     Converts a timestamp into a formatted datetime
 
@@ -24,9 +24,14 @@ def format_timestamp(value):
     ----------
     :param: the dict object with the timestamp
     """
-    date_from_timestamp = datetime.fromtimestamp(value["publish_date"])
-    value["publish_date"] = datetime.strftime(date_from_timestamp, '%Y-%m-%d')
+    date_from_timestamp = datetime.fromtimestamp(value[key])
+    value[key] = datetime.strftime(date_from_timestamp, '%Y-%m-%d')
     return value
+
+
+def is_timestamp_from_today(value):
+    today = datetime.strftime(datetime.today(), '%Y-%m-%d')
+    return True if today == datetime.strftime(datetime.fromtimestamp(value), '%Y-%m-%d') else False
 
 
 class MongoDBClients:
@@ -69,7 +74,7 @@ class MongoDBHandler(MongoDBClients):
         try:
             client = MongoDBClients.get_client_for_quests(self)
             QUERY = {'$and': [{'teachers_id': {'$eq': teacher_id}}, {'subjects_id': {'$eq': int(subject_id)}}]}
-            return [format_timestamp(stringify_id(x)) for x in client.find(QUERY)]
+            return [format_timestamp(stringify_id(x), key='publish_date') for x in client.find(QUERY)]
         except (Exception, ValueError) as err:
             print(f"Unexpected {err=}, {type(err)=}")
             return self.error_message
@@ -111,13 +116,16 @@ class MongoDBHandler(MongoDBClients):
             return self.error_message
 
     def get_shop_items(self, teacher_id):
+        error = []
+        payload = None
         try:
             client = MongoDBClients.get_client_for_shop_items(self)
             QUERY = {'teachers_id': {'$eq': teacher_id}}
-            return [stringify_id(x) for x in client.find(QUERY)]
+            payload = [stringify_id(x) for x in client.find(QUERY)]
         except (Exception, KeyError) as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            return self.error_message
+            error = f"Unexpected {err=}, {type(err)=}"
+        finally:
+            return {"error": error, "payload": payload}
 
     def set_student_completed_quests(self, quest):
         try:
@@ -139,6 +147,7 @@ class MongoDBHandler(MongoDBClients):
             print(f"Unexpected {err=}, {type(err)=}")
             return self.error_message
 
+    # todo split in inc und dec
     def update_student_points_balance(self, student_id, score):
         try:
             client = MongoDBClients.get_client_for_students_scores(self)
@@ -151,3 +160,28 @@ class MongoDBHandler(MongoDBClients):
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")
             return self.error_message
+
+    def increment_points_balance(self, student_id, score):
+        error = []
+        updated_count = -1
+        try:
+            client = MongoDBClients.get_client_for_students_scores(self)
+            updated_count = {"updated_count": str(client.update_one({'students_id': student_id}, {
+                '$inc': {"points_balance": score, "total_gained_points": score}}).modified_count)}
+        except Exception as err:
+            error = {"error": [f"Unexpected {err=}, {type(err)=}"]}
+        finally:
+            return {"error": error, "payload": {"updated_count": updated_count}}
+
+    def get_student_shop_data(self, student_id):
+        error = []
+        payload = None
+        try:
+            client = MongoDBClients.get_client_for_students_scores(self)
+            QUERY = {'students_id': {'$eq': student_id}}
+            payload = [stringify_id(x) for x in client.find(QUERY, {"points_balance": 1, "latest_redeem_date": 1})]
+            payload[0]["latest_redeem_date"] = is_timestamp_from_today(payload[0].get("latest_redeem_date"))
+        except Exception as err:
+            error = {"error": [f"Unexpected {err=}, {type(err)=}"]}
+        finally:
+            return {"error": error, "payload": payload}
