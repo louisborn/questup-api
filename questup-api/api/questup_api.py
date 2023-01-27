@@ -1,8 +1,8 @@
+import db
+
 from flask import Flask, request
 from flask_cors import CORS
 
-import db
-from db import *
 from utils.daily_chest import DailyChest
 from utils.scores_page import ScoresPageHandler
 from utils.prediction import GradePredictionController
@@ -11,7 +11,6 @@ app = Flask(__name__)
 CORS(app)
 
 questup_api_v1_base = '/quest-up/rest/v1/'
-_db = MongoDBHandler()
 
 
 @app.route(f"{questup_api_v1_base}teachers/<teacher>/subjects/<subject>/quests")
@@ -83,7 +82,7 @@ def get_scores_page_data(student_id):
 
 
 @app.route(f"{questup_api_v1_base}predict/level", methods=['POST'])
-def get_predicted_level(student_id):
+def get_predicted_level():
     json_data = request.get_json()
     data = json_data.get("payload")
     controller = GradePredictionController(input_arr=data)
@@ -91,36 +90,28 @@ def get_predicted_level(student_id):
 
 
 @app.route(f"{questup_api_v1_base}daily-quest/win/<student_id>")
-def get_daily_quest_win(student_id):
+def get_daily_quest_win(student):
     daily_quest = DailyChest()
-    result = daily_quest.store_quest_win(user_id=student_id)
+    result = daily_quest.store_quest_win(student)
     if result.get("payload").get("updated_count") != 0:
-        daily_quest.update_redeem_date(user_id=student_id)
+        daily_quest.update_redeem_date(student)
     result.get("payload")["win"] = daily_quest.user_win
     return result
 
 
-@app.route(f"{questup_api_v1_base}student/<student_id>/shop/points")
-def get_student_points_for_shop(student_id):
-    return _db.get_student_shop_data(student_id)
+@app.route(f"{questup_api_v1_base}student/<student>/shop/points")
+def get_student_points_for_shop(student):
+    payload = db.get_student_scores_by_selected(student, selection={"points_balance": 1, "latest_redeem_date": 1,
+                                                                    "bought_items": 1})
+    payload[0]["latest_redeem_date"] = db.is_timestamp_from_today(payload[0].get("latest_redeem_date"))
+    return payload
 
 
-@app.route(f"{questup_api_v1_base}student/<student_id>/shop/buy/<item_id>", methods=["POST"])
-def buy_shop_item(student_id, item_id):
+@app.route(f"{questup_api_v1_base}student/<student>/shop/buy/<item>", methods=["POST"])
+def buy_shop_item(student, item):
     json_data = request.get_json()
     price = int(json_data.get("item_price"))
-    return _db.buy_shop_item(student_id, item_id, price)
-
-
-@app.route(questup_api_v1_base + 'students/<student_id>')
-def get_student(student_id):
-    """
-    Parameters
-    ----------
-    :param student_id: the unique student identifier
-    :return: the student data object
-    """
-    return _db.get_student(student_id)
+    return db.buy_shop_item(student, item, price)
 
 
 app.run(host="0.0.0.0", port=6009, threaded=True)

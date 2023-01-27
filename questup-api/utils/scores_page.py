@@ -10,7 +10,9 @@ class ScoresPageHandler:
         self.personal = self.update_predicted_grade()
 
     def _get_user_scores(self):
-        return db.get_student_selected_scores(self.student)
+        return db.get_student_scores_by_selected(self.student,
+                                                 selection={"predicted_grade": 1, "total_gained_points": 1,
+                                                            "activity_log": 1})
 
     def _count_completed_quests(self):
         return db.count_student_completed_quests(self.student)
@@ -22,7 +24,7 @@ class ScoresPageHandler:
         return db.get_student_selected_personal(self.student)
 
     def _store_predicted_grade(self, grade):
-        return db.store_student_predicted_grade(self.student, grade)
+        return db.add_student_predicted_grade(self.student, grade)
 
     def update_predicted_grade(self):
         personal = self._get_user_personal_data()
