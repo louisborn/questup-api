@@ -75,9 +75,9 @@ def update_points_balance(student):
     return db.increment_points_balance(student, value)
 
 
-@app.route(f"{questup_api_v1_base}student/<student_id>/scores")
-def get_scores_page_data(student_id):
-    handler = ScoresPageHandler(student_id, "63a7172a8883bff3af39eb2e")
+@app.route(f"{questup_api_v1_base}student/<student>/scores")
+def get_scores_page_data(student):
+    handler = ScoresPageHandler(student, "63a7172a8883bff3af39eb2e")
     return handler.get_page_data()
 
 
