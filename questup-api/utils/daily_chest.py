@@ -1,5 +1,5 @@
 import random
-from mongodb_handler import MongoDBHandler
+from db import MongoDBHandler
 from datetime import datetime
 
 

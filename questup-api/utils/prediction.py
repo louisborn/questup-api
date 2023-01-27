@@ -19,7 +19,7 @@ class GradePredictionController:
         if input_arr is None:
             input_arr = DEFAULT_PD_DATA
         self.model_storage_link = 'grade_prediction_model.joblib'
-        self.training_data = pd.read_csv('data/student-mat.csv')
+        self.training_data = pd.read_csv('../data/student-mat.csv')
         self.features = FEATURES
         self.input_arr = input_arr
 
