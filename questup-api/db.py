@@ -225,3 +225,14 @@ def buy_shop_item(student, item, price):
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         return err
+
+
+def add_student_redeem_date(student, date):
+    """
+    Updates the latest redeem date of a student.
+    """
+    try:
+        get_db().students_scores.update_one({'students_id': student}, {'$set': {'latest_redeem_date': date}})
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        return err
