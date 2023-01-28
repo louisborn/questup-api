@@ -1,6 +1,7 @@
-import numpy as np
-import pandas as pd
 import math
+import numpy
+import pandas
+
 from joblib import dump, load
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
@@ -19,7 +20,7 @@ class GradePredictionController:
         if input_arr is None:
             input_arr = DEFAULT_PD_DATA
         self.model_storage_link = 'grade_prediction_model.joblib'
-        self.training_data = pd.read_csv('../data/student-mat.csv')
+        self.training_data = pandas.read_csv('../data/student-mat.csv')
         self.features = FEATURES
         self.input_arr = input_arr
 
@@ -84,4 +85,4 @@ class Predicter:
             self.load_model()
 
     def predict(self):
-        return math.ceil(self.model.predict(np.array(self.parent.input_arr).reshape((1, -1)))[0])
+        return math.ceil(self.model.predict(numpy.array(self.parent.input_arr).reshape((1, -1)))[0])
