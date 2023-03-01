@@ -22,7 +22,7 @@
 * ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
 
 ### Algorithms
-This project uses machine learning algorithms from the scikit-learn python library. 
-* Linear Regression [scikit-learn.Linear Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
+This project uses machine learning algorithms from the scikit-learn python library. The following machine learning algorithm was used to predict the students final grades:
+* Linear Regression [sklearn.linear_model.LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
 
 For a more detailed project description refere to our [questup-frontend repository](https://github.com/louisborn/questup-frontend).
