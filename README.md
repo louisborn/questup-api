@@ -1,3 +1,7 @@
+This project was submitted as a final project for Learning Analytics course under [Social Computing department](https://www.uni-due.de/soco/) at [Duisburg-Essen University](https://www.uni-due.de). This repository is the REST api for the corresponding questup-frontend repository.
+
+For a more detailed project description refere to our [questup-frontend repository](https://github.com/louisborn/questup-frontend).
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -11,6 +15,8 @@
         <li><a href="#architecture">Algorithms</a></li>
       </ul>
     </li>
+    <li><a href="#authors">Authors</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -25,4 +31,22 @@
 This project uses machine learning algorithms from the scikit-learn python library. The following machine learning algorithm was used to predict the students final grades:
 * Linear Regression [sklearn.linear_model.LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
 
-For a more detailed project description refere to our [questup-frontend repository](https://github.com/louisborn/questup-frontend).
+
+## Authors
+
+- [@louisborn](https://github.com/louisborn)
+- [@jordyhz](https://github.com/jordyhz)
+- [@ingasun](https://github.com/ingasun)
+- [@nigoss89](https://github.com/nigoss89)
+
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+ - [scikit-learn](https://scikit-learn.org/stable/index.html)
+ - [mongodb](https://www.mongodb.com/)
+ - [flask](https://flask.palletsprojects.com/en/2.2.x/)
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
